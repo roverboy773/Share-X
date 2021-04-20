@@ -99,7 +99,7 @@ section.content .drop_box_wrapper .info{
     font-size: 20px;
 }
 
-section.content .drop_box_wrapper .info .file_selector{
+section.content .drop_box_wrapper .info .file_selector_btn{
     color:rgba(22, 136, 243, 1);
     cursor: pointer;
 }

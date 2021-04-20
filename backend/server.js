@@ -2,11 +2,19 @@ const express= require('express');
 const app= express();
 const port=process.env.PORT||3000;
 const path=require('path');
+const cors=require('cors');
 
 const db=require("./config/db")
-db();
+db(); 
 
+//cors
+const corsOption={
+    origin:process.env.ORIGIN.split(',')
+}
 
+app.use(cors(corsOption));
+
+// app.use(express.static(''))
 app.use(express.json())
 //views
 app.set('views',path.join(__dirname,'/views'));
