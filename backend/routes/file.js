@@ -28,6 +28,7 @@ router.post("/",(req,res)=>{
 //store file
   upload(req,res,async(err)=>{
       //validate request
+    //   console.log(req.file);
        if(!req.file)
        return res.json({"message":"select a file"});
   
@@ -43,7 +44,7 @@ router.post("/",(req,res)=>{
        })
 
        const response=await file.save();
-       return res.json({file:`${process.env.APP_URL}/files/${response.uuid}`})
+       return res.json({file:`${process.env.APP_URL}files/${response.uuid}`})
   })
 
 
