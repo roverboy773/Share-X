@@ -8,8 +8,12 @@ const db=require("./config/db")
 db();
 
 const corsOptions={
-    origin:process.env.ORIGIN.split(',');
-}
+    "origin": "*",
+    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+    "preflightContinue": false,
+    "optionsSuccessStatus": 204
+  }
+  
 app.use(cors(corsOptions));
 app.use(expresss.static('public'));
 app.use(express.json())
