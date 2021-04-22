@@ -13,6 +13,7 @@ const corsOptions={
 
 app.use(cors(corsOptions));
 
+app.use(expresss.static('public'));
 app.use(express.json())
 //views
 app.set('views',path.join(__dirname,'/views'));
