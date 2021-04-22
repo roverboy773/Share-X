@@ -7,14 +7,7 @@ const cors=require('cors');
 const db=require("./config/db")
 db();
 
-const corsOptions={
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false,
-    "optionsSuccessStatus": 204
-  }
-  
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(expresss.static('public'));
 app.use(express.json())
 //views
