@@ -8,6 +8,7 @@ const cors=require('cors');
 const db=require("./config/db")
 db(); 
 
+app.use(express.static('public'));
 //cors
  app.use(cors());
 

@@ -6,7 +6,7 @@ router.get("/:uuid",async(req,res)=>{
     try{
     const file=await File.findOne({uuid:req.params.uuid});
     if(!file){
-      return res.render('download',{error:"link expired"})
+      return res.render('download',{error:"File not Found"})
      }
       return res.render('download',{
           uuid:file.uuid,
