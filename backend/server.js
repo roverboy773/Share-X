@@ -21,7 +21,7 @@ app.set('view engine','ejs')
 //routes
 app.use('/api/file',require("./routes/file"));
 app.use('/files',require('./routes/show'));
-app.use('files/download',require('./routes/download'));
+app.use('/files/download',require('./routes/download'));
 
 
 app.listen(port,()=>console.log("server running at "+port));
