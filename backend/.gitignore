@@ -2,5 +2,3 @@
 uploads/*
 node_modules
 !uploads/.gitkeep
-email.js
-emailHTMLTemplate.js

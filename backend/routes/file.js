@@ -51,36 +51,4 @@ router.post("/",(req,res)=>{
 //response
 })
 
-router.post('/send',async(req,res)=>{
-  
-    const {uuid,emailTo,emailFrom}=req.body;
-    if(!uuid ||!emailTo ||!emailFrom){
-        return res.status(422).send({error:"All feilds are required"});
-    }
-    //get data from database
-
-    const file=await File.findOne({uuid:uuid});
-
-    file.sender=emailFrom;
-    file.receiver=emailTo;
-
-    const response=await file.save();
-
-    //email send
-    const sendMail=require('../email');
-    sendMail({
-        from:emailFrom,
-        to:emailTo,
-        subject:'ShareX-File Sharing Made Ez',
-        text:`${emailFrom} has shared a file with you`,
-        html:require("../emailHTMLTemplate")({
-            emailFrom:emailFrom,
-            downloadLink:`${process.env.APP_URL}/files/${file.uuid}`,
-            size:parseInt(file.size/1000)+'KB',
-            expires:'24 hours'
-        })
-    })
-    return res.send({success:"email sent"})
-})
-
 module.exports=router;
