@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express=require("express");
 const router=express.Router();
 const multer=require("multer");
@@ -44,7 +45,7 @@ router.post("/",(req,res)=>{
        })
 
        const response=await file.save();
-       //console.log(process.env.APP_URL)
+    //    console.log(process.env.APP_URL)
        return res.json({file:`${process.env.APP_URL}files/${response.uuid}`})
   })
 

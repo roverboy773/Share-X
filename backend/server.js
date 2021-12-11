@@ -29,5 +29,5 @@ app.use('/api/file',require("./routes/file"));
 app.use('/files',require('./routes/show'));
 app.use('/files/download',require('./routes/download'));
 
-
+// console.log(process.env.APP_URL)
 app.listen(port,()=>console.log("server running at "+port));
