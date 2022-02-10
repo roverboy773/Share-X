@@ -12,7 +12,7 @@ const helper=require('./config/SaveGoogleUsertoDB');
 
 
 const corsOptions ={
-    origin:['http://localhost:3000','https://jolly-dubinsky-0429de.netlify.app','http://127.0.0.1:3000','https://zen-hoover-664ef4.netlify.app'], 
+    origin:['http://localhost:3000','https://inspiring-heisenberg-f615df.netlify.app','http://127.0.0.1:3000'], 
 
 credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
