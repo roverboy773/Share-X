@@ -16,10 +16,11 @@ let storage=multer.diskStorage({
         cb(null,uniqueName)
     }
 }) 
-
+// max size 100MB
+// HEROKU MAX SIZE 512MB
 const upload=multer({
     storage,
-    limits:{fileSize:1000000*100}
+    limits:{fileSize:1000000*100}   
 }).single('myFile')
 
 
@@ -29,7 +30,7 @@ router.post("/",(req,res)=>{
 //store file
   upload(req,res,async(err)=>{
       //validate request
-    //   console.log(req.file);
+    //   console.log(req.body.file_ownwer);
        if(!req.file)
        return res.json({"message":"select a file"});
   
@@ -42,11 +43,13 @@ router.post("/",(req,res)=>{
            path:req.file.path,
            size:req.file.size,
            uuid:uuidv4(),
+           file_owner:req.body.file_owner
        })
 
        const response=await file.save();
     //    console.log(process.env.APP_URL)
-       return res.json({file:`${process.env.APP_URL}files/${response.uuid}`})
+       return res.json({file:`${process.env.APP_URL}files/${response.uuid}`,
+                       resp:response})
   })
 
 
