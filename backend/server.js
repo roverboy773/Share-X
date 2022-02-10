@@ -51,14 +51,14 @@ app.get('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/public/google/callback',
-  passport.authenticate('google', { failureRedirect: 'http:localhost:3000/public/fail' }),(req,res)=>helper(req,res))
+  passport.authenticate('google', { failureRedirect: 'https://inspiring-heisenberg-f615df.netlify.app/public/fail' }),(req,res)=>helper(req,res))
 
 //passport facebook auth
 app.get('/public/facebook', passportface,
   passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 app.get('/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: 'http:localhost:3000/public/fail' }),(req,res)=>helper(req,res));
+  passport.authenticate('facebook', { failureRedirect: 'https://inspiring-heisenberg-f615df.netlify.app/public/fail' }),(req,res)=>helper(req,res));
 
 
 
