@@ -12,7 +12,7 @@ const helper=require('./config/SaveGoogleUsertoDB');
 
 
 const corsOptions ={
-    origin:['http://localhost:3000','https://inspiring-heisenberg-f615df.netlify.app','http://127.0.0.1:3000'], 
+    origin:['http://localhost:3000','https://jolly-dubinsky-0429de.netlify.app/','http://127.0.0.1:3000'], 
 
 credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
@@ -51,14 +51,14 @@ app.get('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/public/google/callback',
-  passport.authenticate('google', { failureRedirect: 'https://inspiring-heisenberg-f615df.netlify.app/public/fail' }),(req,res)=>helper(req,res))
+  passport.authenticate('google', { failureRedirect: 'https://jolly-dubinsky-0429de.netlify.app/public/fail' }),(req,res)=>helper(req,res))
 
 //passport facebook auth
 app.get('/public/facebook', passportface,
   passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 app.get('/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: 'https://inspiring-heisenberg-f615df.netlify.app/public/fail' }),(req,res)=>helper(req,res));
+  passport.authenticate('facebook', { failureRedirect: 'https://jolly-dubinsky-0429de.netlify.app/public/fail' }),(req,res)=>helper(req,res));
 
 
 
