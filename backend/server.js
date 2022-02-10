@@ -47,10 +47,10 @@ app.use('/login', passportemail,
   passport.authenticate('local', { failureRedirect: '/login/email' }), (req, res)=> {res.status(200);return res.json({user_id:req.session.passport.user,name:req.user.name})});
 
 //passport google auth 
-app.get('/public/google', passportgoogle,
+app.use('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/public/google/callback',
+app.use('/public/google/callback',
   passport.authenticate('google', { failureRedirect: 'https://inspiring-heisenberg-f615df.netlify.app/public/fail' }),(req,res)=>helper(req,res))
 
 //passport facebook auth
