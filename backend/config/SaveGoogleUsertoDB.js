@@ -10,7 +10,7 @@ async function helper(req,res) {
         if (user.length) {
           
             res.redirect(url.format({
-                pathname:"https://jolly-dubinsky-0429de.netlify.app/public/index.html",
+                pathname:"https://zen-hoover-664ef4.netlify.app/public/index.html",
                 query: {
                   '_id':user[0]._id+"",
                   'name':user[0].name,
@@ -31,7 +31,7 @@ async function helper(req,res) {
         if (saved) {
             console.log(saved._id)
             res.redirect(url.format({
-                pathname:"https://jolly-dubinsky-0429de.netlify.app/public/index.html",
+                pathname:"https://zen-hoover-664ef4.netlify.app/public/index.html",
                 query:{
                     "_id":saved._id+"",
                     "name":saved.name,
