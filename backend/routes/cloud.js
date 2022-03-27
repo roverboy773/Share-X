@@ -5,14 +5,14 @@ const File=require('../models/model');
 
 router.post('/',async(req,res)=>{
     const {file_id,cloud_URL}=req.body
-    console.log(file_id,cloud_URL)
+    // console.log(file_id,cloud_URL)
     try{
     const file=await File.UpdateOne({_id:mongoose.Types.ObjectId(file_id)},{
      $set:{cloud_URL:cloud_URL}
     });
-    console.log(file)
+    // console.log(file)
     const doc = await File.findOne({_id:mongoose.Types.ObjectId(file_id)});
-   console.log(doc)
+//    console.log(doc)
     // if(!file){
     //     res.statusMessage="No Such File Exists"
     //     return res.status(200).end();

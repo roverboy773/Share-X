@@ -10,9 +10,14 @@ const passportgoogle=require("./config/Passport_google")
 const passportface=require("./config/Passport_face")
 const helper=require('./config/SaveGoogleUsertoDB');
 
+const clamscanConfig=require('./config/clamscan')
+const NodeClam = require('clamscan')
+const ClamScan = new NodeClam().init(clamscanConfig)
+
+const checkForVirus=require('./middleware/checkForVirus')
 
 const corsOptions ={
-    origin:['http://localhost:3000','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app','http://127.0.0.1:3000'], 
+    origin:['http://localhost:3000','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app/','http://127.0.0.1:3000'], 
 
 credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
@@ -32,13 +37,14 @@ app.set('views',path.join(__dirname,'/views'));
 app.set('view engine','ejs')
 
 //routes
-app.use('/api/file',require("./routes/file"));
+app.use('/api/file',checkForVirus,require("./routes/file"));
 app.use('/files',require('./routes/show'));
 app.use('/files/download',require('./routes/download'));
 app.use('/register', require("./routes/postRegister"));
 app.use('/sent_to',require("./routes/sent"))
 app.use('/sent_files',require("./routes/sent_files"))
 app.use('/received_files',require("./routes/received_files"))
+app.use('/merge_files',require("./routes/file"))
 // app.use('/cloud',require("./routes/cloud"))
 // app.use('/logout', require("./routes/logout"));
 
@@ -51,14 +57,14 @@ app.get('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/public/google/callback',
-  passport.authenticate('google', { failureRedirect: 'https://kind-babbage-ba1758.netlify.app/public/fail' }),(req,res)=>helper(req,res))
+  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/public/fail' }),(req,res)=>helper(req,res))
 
 //passport facebook auth
 app.get('/public/facebook', passportface,
   passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 app.get('/public/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: 'https://kind-babbage-ba1758.netlify.app/public/fail' }),(req,res)=>helper(req,res));
+  passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/public/fail' }),(req,res)=>helper(req,res));
 
 
 
