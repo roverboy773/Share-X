@@ -10,9 +10,9 @@ const passportgoogle=require("./config/Passport_google")
 const passportface=require("./config/Passport_face")
 const helper=require('./config/SaveGoogleUsertoDB');
 
-const clamscanConfig=require('./config/clamscan')
-const NodeClam = require('clamscan')
-const ClamScan = new NodeClam().init(clamscanConfig)
+// const clamscanConfig=require('./config/clamscan')
+// const NodeClam = require('clamscan')
+// const ClamScan = new NodeClam().init(clamscanConfig)
 
 const checkForVirus=require('./middleware/checkForVirus')
 
@@ -37,7 +37,7 @@ app.set('views',path.join(__dirname,'/views'));
 app.set('view engine','ejs')
 
 //routes
-app.use('/api/file',checkForVirus,require("./routes/file"));
+app.use('/api/file',require("./routes/file"));
 app.use('/files',require('./routes/show'));
 app.use('/files/download',require('./routes/download'));
 app.use('/register', require("./routes/postRegister"));

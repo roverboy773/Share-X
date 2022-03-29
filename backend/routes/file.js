@@ -25,22 +25,22 @@ const upload = multer({
 
 
 router.post("/", (req, res) => {
-  
+  console.log(req.body)
   if (req.body.toBeMerge) {
 
     var merger = new PDFMerger();
     (async () => {
-      let mergedFileName=""
-      for(let i=0;i<req.body.data.length;i++){
-        mergedFileName+=`${req.body.data[i]}-`
-        merger.add('uploads/'+`${req.body.data[i]}`);
+      let mergedFileName = ""
+      for (let i = 0; i < req.body.data.length; i++) {
+        mergedFileName += `${req.body.data[i]}-`
+        merger.add('uploads/' + `${req.body.data[i]}`);
       }
-      mergedFileName=mergedFileName.substring(0,mergedFileName.length-1)
+      mergedFileName = mergedFileName.substring(0, mergedFileName.length - 1)
 
-      await merger.save('uploads/'+mergedFileName+'.pdf'); //save under given name and reset the internal document
-  
+      await merger.save('uploads/' + mergedFileName + '.pdf'); //save under given name and reset the internal document
+
       const file = new File({
-        fileName: mergedFileName+'.pdf',
+        fileName: mergedFileName + '.pdf',
         uuid: uuidv4(),
         path: `uploads/${mergedFileName}.pdf`,
       })
@@ -54,10 +54,40 @@ router.post("/", (req, res) => {
     })();
   }
   //store file
+
+  else if (req.body.convert) {
+    const path = require('path');
+    const fs = require('fs').promises;
+
+
+    const libre = require('libreoffice-convert');
+    libre.convertAsync = require('util').promisify(libre.convert);
+
+    (async function fn() {
+      const ext = req.body.convertTo
+      const inputPath = path.join(__dirname, "../", req.body.data.resp.path);
+      console.log(inputPath)
+      const temp = req.body.data.resp.fileName.lastIndexOf('.')
+      // console.log(req.body.data.resp.fileName.substring(0,temp))
+      const outputPath = path.join(__dirname, "../", `uploads/${req.body.data.resp.fileName.substring(0, temp)}${ext}`);
+       console.log(outputPath)
+      // Read file
+      const docxBuf = await fs.readFileSync(inputPath);
+
+      // Convert it to pdf format with undefined filter (see Libreoffice docs about filter)
+      let done = await libre.convertAsync(docxBuf, ext, undefined);
+
+      // Here in done you have pdf file which you can save or transfer in another stream
+     const finalConvert=await fs.writeFileSync (outputPath, done);
+     console.log(finalConvert)
+    })()
+
+
+  }
   else {
     upload(req, res, async (err) => {
       //validate request
-    
+
       if (!req.file)
         return res.json({ "message": "select a file" });
 
@@ -82,7 +112,7 @@ router.post("/", (req, res) => {
     })
   }
 
-  //response
+
 })
 
 module.exports = router;
