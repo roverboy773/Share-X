@@ -17,7 +17,7 @@ const helper=require('./config/SaveGoogleUsertoDB');
 const checkForVirus=require('./middleware/checkForVirus')
 
 const corsOptions ={
-    origin:['http://localhost:3000','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app/','http://127.0.0.1:3000'], 
+    origin:['http://localhost:5500','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app/','http://127.0.0.1:3000'], 
 
 credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
@@ -57,14 +57,14 @@ app.get('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/public/google/callback',
-  passport.authenticate('google', { failureRedirect: 'http://localhost:3000/public/fail' }),(req,res)=>helper(req,res))
+  passport.authenticate('google', { failureRedirect: 'http://localhost:5500/public/fail' }),(req,res)=>helper(req,res))
 
 //passport facebook auth
 app.get('/public/facebook', passportface,
   passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 
 app.get('/public/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/public/fail' }),(req,res)=>helper(req,res));
+  passport.authenticate('facebook', { failureRedirect: 'http://localhost:5500/public/fail' }),(req,res)=>helper(req,res));
 
 
 
