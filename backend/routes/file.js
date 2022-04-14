@@ -26,14 +26,17 @@ const upload = multer({
 }).single("myFile");
 
 router.post("/", (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   if (req.body.toBeMerge) {
+    console.log(req.body.data)
     var merger = new PDFMerger();
     (async () => {
       let mergedFileName = "";
       for (let i = 0; i < req.body.data.length; i++) {
+        if(req.body.data[i]!=null){
         mergedFileName += `${req.body.data[i]}-`;
         merger.add("uploads/" + `${req.body.data[i]}`);
+        }
       }
       mergedFileName = mergedFileName.substring(0, mergedFileName.length - 1);
 
@@ -65,16 +68,29 @@ router.post("/", (req, res) => {
     convertapi.convert(ext, { File:path.join(__dirname,`../${req.body.data.resp.path}` )})
     .then(function(result) {
       // get converted file url'
-      console.log("Converted file url: " + result.file.url);
+      // console.log("Converted file url: " + result.file.url);
       const temp1 = req.body.data.resp.path.lastIndexOf(".");
 
       // save to file
       // console.log(path.join(__dirname,`../${req.body.data.resp.path.substring(0,temp1)}.pdf`))
       return result.file.save(path.join(__dirname,`../${req.body.data.resp.path.substring(0,temp1)}.${ext}`));
     })
-    .then(function(file) {
-      console.log("File saved: " + file);
-      return res.status(200).json({msg:'File Successfully Converted'})
+    .then(async function(file) {
+      // console.log("File saved: " + file);
+      const temp1 = req.body.data.resp.path.lastIndexOf(".");
+      const newfile = new File({
+        fileName: `${`${req.body.data.resp.path.substring(0,temp1)}.${ext}`.replace('uploads/','')}`,
+        uuid: uuidv4(),
+        path: `${req.body.data.resp.path.substring(0,temp1)}.${ext}`,
+      });
+
+      const response = await newfile.save();
+
+      return res.status(200).json({
+        file: `${process.env.APP_URL}files/${response.uuid}`,
+        resp: response,
+        msg:'File Successfully Converted'
+      });
     })
     .catch(function(e) {
       console.error(e.toString());

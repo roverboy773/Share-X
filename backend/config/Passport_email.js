@@ -11,7 +11,7 @@ function passportInit(req,res,next) {
         // console.log(user)
         if (!user) {
            
-            return done(null, false);
+            return done(null, false,{message: 'No such User exists'});
         }
         bcrypt.compare(password, user.password).then(match => {
             if (match) {

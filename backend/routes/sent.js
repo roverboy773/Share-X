@@ -2,6 +2,7 @@ require("dotenv").config();
 const router = require('express').Router();
 const mongoose = require("mongoose");
 const User = require('../models/user');
+const nodemailer = require('nodemailer')
 
 router.post('/:email', async (req, res) => {
   try {
@@ -35,22 +36,46 @@ router.post('/:email', async (req, res) => {
 
     sender.sent.push({
       name: receiver.name, _id: receiver._id, email: receiver.email,
-      Time: (new Date().getMonth() + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear() + 
-      " ( " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() + 
-      " )" ,
-      link:`${process.env.APP_URL}files/${file}`
+      Time: (new Date().getMonth() + 1) + "-" + new Date().getDate() + "-" + new Date().getFullYear() +
+        " ( " + new Date().getHours() + ":" + new Date().getMinutes() + ":" + new Date().getSeconds() +
+        " )",
+      link: `${process.env.APP_URL}files/${file}`
     })
 
     const saved1 = await sender.save();
-    // console.log(saved1, 27)
-    res.statusMessage = "File Sent Sccessfully"
-    return res.status(200).end()
+    if (saved) {
+      res.statusMessage = "File Sent Successfully"
 
 
-  } catch (err) {
-    res.statusMessage = "Some Error Occured"
-    return res.status(400).end();
-  }
-})
+      const transport = nodemailer.createTransport({
+        service: "hotmail",
+        auth: {
+          user: "ps9395@outlook.com",
+          pass: process.env.EMAILPASSWORD
+        }
+      })
+
+      const options = {
+        from: 'ps9395@outlook.com',
+        to: req.params.email,
+        subject: `Your Desired File Link`,
+        text: `Kindly Click on the Link to Access the File
+             ${process.env.APP_URL}files/${file}`
+      }
+      transport.sendMail(options, (err, done) => {
+        if (err) {
+          console.log(err)
+          return
+        }
+        return res.status(200).end()
+      })
+      
+
+
+    }} catch (err) {
+      res.statusMessage = "Some Error Occured"
+      return res.status(400).end();
+    }
+  })
 
 module.exports = router;
