@@ -57,6 +57,17 @@ router.post("/", (req, res) => {
     })();
   }
 
+  else if(req.body.toBeSplit){
+    var convertapi = require('convertapi')(process.env.CONVERTAPISECRET);
+    console.log(req.body)
+    convertapi.convert('split', {
+      File: path.join(__dirname,`../uploads/${req.body.data}`)
+      }, 'pdf')
+      .then(function(result) {
+      result.saveFiles(path.join(__dirname,`../uploads/`));
+    });
+  }
+
   //store file
   else if (req.body.convert) {
   
@@ -98,7 +109,6 @@ router.post("/", (req, res) => {
   } else {
     upload(req, res, async (err) => {
       //validate request
-
       if (!req.file) return res.json({ message: "select a file" });
 
       if (err) {
