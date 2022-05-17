@@ -16,12 +16,12 @@ const helper=require('./config/SaveGoogleUsertoDB');
 
 const checkForVirus=require('./middleware/checkForVirus')
 
-// const corsOptions ={
-//     origin:['http://localhost:5500/','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app/','http://127.0.0.1:3000','http://127.0.0.1:5500/'], 
+const corsOptions ={
+    origin:['http://localhost:5500/','https://jolly-dubinsky-0429de.netlify.app/','https://zen-hoover-664ef4.netlify.app/','https://kind-babbage-ba1758.netlify.app/','http://127.0.0.1:3000','http://127.0.0.1:5500/'], 
 
-// credentials:true,            //access-control-allow-credentials:true
-//     optionSuccessStatus:200
-// }
+credentials:true,            //access-control-allow-credentials:true
+   
+}
 app.use(cors());
 const db=require("./config/db")
 db(); 
