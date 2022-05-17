@@ -67,8 +67,9 @@ router.post('/:email', async (req, res) => {
           console.log(err)
           return
         }
+        return res.status(200).end()
       })
-      return res.status(200).end()
+      
 
 
     }} catch (err) {
