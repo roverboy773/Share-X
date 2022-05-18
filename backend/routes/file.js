@@ -6,6 +6,8 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const File = require("../models/model");
 const PDFMerger = require("pdf-merger-js");
+const fs=require('fs')
+var zip = require('express-zip');
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -58,16 +60,38 @@ router.post("/", (req, res) => {
   }
 
   else if(req.body.toBeSplit){
+
     var convertapi = require('convertapi')(process.env.CONVERTAPISECRET);
-    console.log(req.body)
+    // console.log(req.body)
     convertapi.convert('split', {
       File: path.join(__dirname,`../uploads/${req.body.data}`)
       }, 'pdf')
       .then(function(result) {
-      result.saveFiles(path.join(__dirname,`../uploads/`));
-    });
-  }
+        result.saveFiles(path.join(__dirname,`../uploads/`));
+    }).then(()=>{
+      try{
+      let files=[]
+      let pat=path.join(__dirname,'/../uploads/',req.body.data);
+      let i=1;
+         while(fs.existsSync(pat)){
+           console.log(pat)
+          files.push({ path : pat, name : `File-${i}`})
+          i++;
+          if(i==2){
+          pat=pat.replace('.pdf',`-${i}.pdf`);
+          }else if(i>2)
+          pat=pat.replace(`-${i-1}.pdf`,`-${i}.pdf`)
 
+          // console.log(files)
+         }
+        res.zip(files)
+      }catch(e){
+        console.log('error',e)
+      }
+    });
+    return;
+  }
+   
   //store file
   else if (req.body.convert) {
   
