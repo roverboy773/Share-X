@@ -48,13 +48,10 @@ app.use('/merge_files',require("./routes/file"))
 app.use('/sendOTP',require("./routes/sendEmail"))
 app.use('/updateUser',require("./routes/updateUser"))
 
-// app.use('/cloud',require("./routes/cloud"))
-// app.use('/logout', require("./routes/logout"));
 
 //passport local auth
 app.use('/login',require("./routes/loginEmail"))
   
-
 //passport google auth 
 app.get('/public/google', passportgoogle,
   passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -70,7 +67,7 @@ app.get('/public/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: 'http://localhost:3000/public/fail' }),(req,res)=>helper(req,res));
 
 
-
-
-// console.log(process.env.APP_URL)
+app.get("/",(req,res)=>{
+  res.send("server running")
+})
 app.listen(port,()=>console.log("server running at "+port));
