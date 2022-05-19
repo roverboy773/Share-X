@@ -7,7 +7,8 @@ const { v4: uuidv4 } = require("uuid");
 const File = require("../models/model");
 const PDFMerger = require("pdf-merger-js");
 const fs=require('fs')
-var zip = require('express-zip');
+// const  zip = require('express-zip');
+const AdmZip=require('adm-zip')
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -28,9 +29,8 @@ const upload = multer({
 }).single("myFile");
 
 router.post("/", (req, res) => {
-  // console.log(req.body);
   if (req.body.toBeMerge) {
-    console.log(req.body.data)
+    // console.log(req.body.data)
     var merger = new PDFMerger();
     (async () => {
       let mergedFileName = "";
@@ -60,7 +60,7 @@ router.post("/", (req, res) => {
   }
 
   else if(req.body.toBeSplit){
-
+       try{
     var convertapi = require('convertapi')(process.env.CONVERTAPISECRET);
     // console.log(req.body)
     convertapi.convert('split', {
@@ -68,28 +68,46 @@ router.post("/", (req, res) => {
       }, 'pdf')
       .then(function(result) {
         result.saveFiles(path.join(__dirname,`../uploads/`));
-    }).then(()=>{
-      try{
-      let files=[]
+    }).then(async()=>{
+    
+        const zip=new AdmZip();
+      // let files=[]
       let pat=path.join(__dirname,'/../uploads/',req.body.data);
       let i=1;
          while(fs.existsSync(pat)){
-           console.log(pat)
-          files.push({ path : pat, name : `File-${i}`})
+          //  console.log(pat)
+           zip.addLocalFile(pat)
           i++;
           if(i==2){
           pat=pat.replace('.pdf',`-${i}.pdf`);
           }else if(i>2)
           pat=pat.replace(`-${i-1}.pdf`,`-${i}.pdf`)
-
-          // console.log(files)
          }
-        res.zip(files)
-      }catch(e){
-        console.log('error',e)
-      }
-    });
-    return;
+
+        const downloadName=`attachment-${Date.now()}.zip`
+
+        const data=zip.toBuffer()
+
+        zip.writeZip(path.join(__dirname,'/../uploads/',downloadName))
+
+        const file = new File({
+          fileName: downloadName,
+          uuid: uuidv4(),
+          path: `uploads/${downloadName}`,
+        });
+  
+        const response = await file.save();
+  
+        return res.status(200).json({
+          file: `${process.env.APP_URL}files/${response.uuid}`,
+          resp: response,
+          msg:'splitting done'
+        });
+
+      })
+    }catch(e){
+        return res.status(500).send('something went wrong')
+    }
   }
    
   //store file

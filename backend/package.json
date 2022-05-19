@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "adm-zip": "^0.5.9",
     "bcrypt": "^5.0.1",
     "clamscan": "^2.1.2",
     "convertapi": "^1.11.1",

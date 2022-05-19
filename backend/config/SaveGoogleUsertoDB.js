@@ -29,7 +29,7 @@ async function helper(req,res) {
         //  console.log(saved)
          
         if (saved) {
-            console.log(saved._id)
+            // console.log(saved._id)
             res.redirect(url.format({
                 pathname:"http://localhost:5500/public/index.html",
                 query:{
