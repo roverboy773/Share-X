@@ -31,6 +31,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pdf-merger-js": "^3.4.0",
+    "unzip": "^0.1.11",
     "uuid": "^8.3.2"
   }
 }

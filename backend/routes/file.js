@@ -10,6 +10,7 @@ const fs=require('fs')
 // const  zip = require('express-zip');
 const AdmZip=require('adm-zip')
 
+
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -28,35 +29,41 @@ const upload = multer({
   limits: { fileSize: 1000000 * 100 },
 }).single("myFile");
 
+
+function mergeFiles(req,res){
+  var merger = new PDFMerger();
+  (async () => {
+    let mergedFileName = "";
+    for (let i = 0; i < req.body.data.length; i++) {
+      if(req.body.data[i]!=null){
+      mergedFileName += `${req.body.data[i]}-`;
+      merger.add("uploads/" + `${req.body.data[i]}`);
+      }
+    }
+    mergedFileName = mergedFileName.substring(0, mergedFileName.length - 1);
+
+    await merger.save("uploads/" + mergedFileName + ".pdf"); //save under given name and reset the internal document
+
+    const file = new File({
+      fileName: mergedFileName + ".pdf",
+      uuid: uuidv4(),
+      path: `uploads/${mergedFileName}.pdf`,
+    });
+
+    const response = await file.save();
+
+    return res.json({
+      file: `${process.env.APP_URL}files/${response.uuid}`,
+      resp: response,
+    });
+  })();
+}
+
 router.post("/", (req, res) => {
   if (req.body.toBeMerge) {
     // console.log(req.body.data)
-    var merger = new PDFMerger();
-    (async () => {
-      let mergedFileName = "";
-      for (let i = 0; i < req.body.data.length; i++) {
-        if(req.body.data[i]!=null){
-        mergedFileName += `${req.body.data[i]}-`;
-        merger.add("uploads/" + `${req.body.data[i]}`);
-        }
-      }
-      mergedFileName = mergedFileName.substring(0, mergedFileName.length - 1);
-
-      await merger.save("uploads/" + mergedFileName + ".pdf"); //save under given name and reset the internal document
-
-      const file = new File({
-        fileName: mergedFileName + ".pdf",
-        uuid: uuidv4(),
-        path: `uploads/${mergedFileName}.pdf`,
-      });
-
-      const response = await file.save();
-
-      return res.json({
-        file: `${process.env.APP_URL}files/${response.uuid}`,
-        resp: response,
-      });
-    })();
+    mergeFiles(req,res)
+ 
   }
 
   else if(req.body.toBeSplit){
@@ -69,11 +76,11 @@ router.post("/", (req, res) => {
       .then(function(result) {
         result.saveFiles(path.join(__dirname,`../uploads/`));
     }).then(async()=>{
-    
+        if(req.body.start=='' && req.body.end==''){
         const zip=new AdmZip();
       // let files=[]
-      let pat=path.join(__dirname,'/../uploads/',req.body.data);
-      let i=1;
+        let pat=path.join(__dirname,'/../uploads/',req.body.data);
+        let i=1;
          while(fs.existsSync(pat)){
           //  console.log(pat)
            zip.addLocalFile(pat)
@@ -97,13 +104,42 @@ router.post("/", (req, res) => {
         });
   
         const response = await file.save();
-  
+          
         return res.status(200).json({
           file: `${process.env.APP_URL}files/${response.uuid}`,
           resp: response,
           msg:'splitting done'
         });
-
+        }else if(req.body.start!='' && req.body.end!='' && req.body.start<=req.body.end){
+            let obj={
+              body:{
+                data:[]
+              }
+            }
+            let pat,indiFileName;
+            let i=req.body.start;
+            if(i==1){
+             pat=path.join(__dirname,'/../uploads/',req.body.data);
+             indiFileName=req.body.data
+            }
+            else{
+             pat=path.join(__dirname,'/../uploads/',req.body.data);
+             pat=pat.replace('.pdf',`-${i}.pdf`);
+             indiFileName=req.body.data.replace(`.pdf`,`-${i}.pdf`)
+            }
+         while(fs.existsSync(pat) && i<=req.body.end){
+          //  console.log(pat)
+           obj.body.data.push(indiFileName)
+          i++;
+          if(i==2){
+          pat=pat.replace('.pdf',`-${i}.pdf`);
+          }else if(i>2)
+          pat=pat.replace(`-${i-1}.pdf`,`-${i}.pdf`)
+          indiFileName=req.body.data.replace(`.pdf`,`-${i}.pdf`)
+         }
+         mergeFiles(obj,res) 
+        }
+      
       })
     }catch(e){
         return res.status(500).send('something went wrong')
