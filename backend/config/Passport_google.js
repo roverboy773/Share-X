@@ -16,7 +16,7 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-// console.log(req)
+console.log(req)
 passport.serializeUser(function(user, done) {
     // console.log(`gauth serializer ${user}`)
     done(null, user);
